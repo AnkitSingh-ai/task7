@@ -1,0 +1,50 @@
+
+-- 📌 Task 7: Creating Views
+
+
+-- 1️⃣ Drop tables if they already exist (for a clean run)
+DROP TABLE IF EXISTS Orders;
+DROP TABLE IF EXISTS Customers;
+
+-- 2️⃣ Create base tables
+CREATE TABLE Customers (
+    CustomerID INTEGER PRIMARY KEY,
+    CustomerName TEXT,
+    Country TEXT
+);
+
+CREATE TABLE Orders (
+    OrderID INTEGER PRIMARY KEY,
+    CustomerID INTEGER,
+    OrderDate TEXT,
+    TotalAmount REAL,
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+-- 3️⃣ Insert sample data
+INSERT INTO Customers (CustomerName, Country) VALUES
+('Ankit', 'India'),
+('John', 'USA'),
+('Sita', 'India');
+
+INSERT INTO Orders (CustomerID, OrderDate, TotalAmount) VALUES
+(1, '2025-09-01', 2500),
+(1, '2025-09-15', 1000),
+(2, '2025-09-10', 3000),
+(3, '2025-09-20', 1500);
+
+-- 4️⃣ Create a VIEW to show total spending per customer
+CREATE VIEW CustomerSpending AS
+SELECT c.CustomerName,
+       c.Country,
+       SUM(o.TotalAmount) AS TotalSpent
+FROM Customers c
+JOIN Orders o ON c.CustomerID = o.CustomerID
+GROUP BY c.CustomerName, c.Country;
+
+-- 5️⃣ View the data from the view (acts like a table)
+SELECT * FROM CustomerSpending;
+
+-- 6️⃣ Example filtering using the view
+SELECT * FROM CustomerSpending
+WHERE TotalSpent > 2000;
